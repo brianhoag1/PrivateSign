@@ -1,0 +1,7 @@
+README.md
+setup.py
+PrivateSign.egg-info/PKG-INFO
+PrivateSign.egg-info/SOURCES.txt
+PrivateSign.egg-info/dependency_links.txt
+PrivateSign.egg-info/requires.txt
+PrivateSign.egg-info/top_level.txt
