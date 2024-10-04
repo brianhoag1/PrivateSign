@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools", "wheel", "Cython"]
+build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+# Specify the Python versions and platforms you want to build for
+build = "cp3?-*"
+skip = [
+    "cp27-*",  # Skip Python 2.7
+    "pp*",
+    "cp35-*",  # Skip Python 3.5
+]
