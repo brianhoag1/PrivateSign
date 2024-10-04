@@ -18,10 +18,10 @@ jobs:
         python-version: [3.8, 3.9, 3.10, 3.11, 3.12]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -31,6 +31,8 @@ jobs:
           pip install cibuildwheel
 
       - name: Build wheels
+        env:
+          CIBW_BUILD: "cp3[8-12]-*"
         run: cibuildwheel --output-dir wheelhouse
 
       - name: Upload wheels as artifacts
