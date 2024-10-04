@@ -23,7 +23,7 @@ class build_py(_build_py):
 
 setup(
     name="PrivateSign",
-    version="0.7.1",
+    version="0.7.2",
     author="Brian",
     author_email="brian.hoag@paperlogic.co.jp",
     description="A secure sign PDF files SDK",

@@ -31,11 +31,7 @@ jobs:
           pip install cibuildwheel
 
       - name: Build wheels
-        env:
-          CIBW_BUILD: "cp3[8-12]-*"
-          CIBW_SKIP: '**/*test*'  # Skip test builds if any
-        run: |
-          cibuildwheel --output-dir wheelhouse
+        run: cibuildwheel --output-dir wheelhouse
 
       - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v3
