@@ -1,0 +1,2 @@
+include PrivateSign/api.py
+recursive-include PrivateSign/signer *.so *.pyd
