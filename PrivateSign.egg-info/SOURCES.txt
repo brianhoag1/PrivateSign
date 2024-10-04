@@ -9,10 +9,7 @@ PrivateSign.egg-info/dependency_links.txt
 PrivateSign.egg-info/not-zip-safe
 PrivateSign.egg-info/requires.txt
 PrivateSign.egg-info/top_level.txt
-PrivateSign/signer/__init__.py
 PrivateSign/signer/cms.c
 PrivateSign/signer/cms.cpython-39-darwin.so
-PrivateSign/signer/cms.py
 PrivateSign/signer/validate.c
 PrivateSign/signer/validate.cpython-39-darwin.so
-PrivateSign/signer/validate.py
