@@ -35,28 +35,26 @@ jobs:
 
       - name: Build wheels
         env:
+          CIBW_BUILD: "cp${{ matrix.python-version }}-*"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
         run: cibuildwheel --output-dir wheelhouse
 
       - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.python-version }}
+          name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
           path: wheelhouse/*.whl
 
   publish:
     name: Publish wheels to PyPI
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.9']
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Download wheels
         uses: actions/download-artifact@v4
         with:
-          name: wheels-${{ matrix.python-version }}
+          name: wheels-*
           path: wheelhouse
 
       - name: Install twine
@@ -69,4 +67,4 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          twine upload wheelhouse/*
+          twine upload wheelhouse/*.whl
