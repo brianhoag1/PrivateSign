@@ -1,5 +1,6 @@
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_py import build_py as _build_py
+from setuptools.command.build_ext import build_ext as _build_ext
 from Cython.Build import cythonize
 import os
 
@@ -21,14 +22,26 @@ class build_py(_build_py):
                     print(f"=====> Removing {src_file}")
                     os.remove(src_file)
 
+class build_ext(_build_ext):
+    def run(self):
+        super().run()
+        for ext in self.extensions:
+            for source in ext.sources:
+                print(f"=====> build_ext {source}")
+                if source.endswith('.c') and os.path.exists(source):
+                    os.remove(source)
+
 setup(
     name="PrivateSign",
-    version="0.7.2",
+    version="0.7.5",
     author="Brian",
     author_email="brian.hoag@paperlogic.co.jp",
     description="A secure sign PDF files SDK",
     packages=find_packages(),
-    cmdclass={'build_py': build_py},
+    cmdclass={
+        'build_ext': build_ext,
+        'build_py': build_py
+    },
     install_requires=[
         "requests",
     ],
@@ -36,14 +49,4 @@ setup(
     include_package_data=True,
     zip_safe=False,
     python_requires='>=3.6',
-
-    # package_data={
-    #     # 'PrivateSign': ['api.py'],
-    #     # 'PrivateSign.src': ['*.so', '*.pyd'],
-    #     'PrivateSign': ['*.pyd', '*.so'],
-    # },
-    # exclude_package_data={
-    #     # '': ['*.py', '*.pyc'], 
-    #     'PrivateSign': ['signer/*.py'],
-    # },
 )

@@ -4,3 +4,4 @@ include PrivateSign/api.py
 # Exclude source files
 exclude PrivateSign/signer/*.py
 exclude PrivateSign/signer/*.pyx
+exclude *.c
