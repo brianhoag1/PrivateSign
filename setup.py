@@ -33,7 +33,7 @@ class build_ext(_build_ext):
 
 setup(
     name="PrivateSign",
-    version="0.7.6",
+    version="0.7.9",
     author="Brian",
     author_email="brian.hoag@paperlogic.co.jp",
     description="A secure sign PDF files SDK",
