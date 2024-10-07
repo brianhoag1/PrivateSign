@@ -32,10 +32,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install cibuildwheel
+      
+      - name: List available Python versions
+        run: ls /opt/hostedtoolcache/Python
 
       - name: Build wheels
         env:
-          CIBW_BUILD: "cp${{ matrix.python-version }}-*"
+          CIBW_BUILD: "cp${{ matrix.python-version//./}}-*"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
         run: cibuildwheel --output-dir wheelhouse
 
