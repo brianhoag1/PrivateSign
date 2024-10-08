@@ -5,9 +5,24 @@ from Cython.Build import cythonize
 import os
 
 extensions = [
-    Extension("PrivateSign.signer.cms", ["PrivateSign/signer/cms.py"]),
-    Extension("PrivateSign.signer.validate", ["PrivateSign/signer/validate.py"]),
+    Extension("PrivateSign.signer", ["PrivateSign/signer.py"]),
 ]
+
+# def find_pyx_files(directory):
+#     pyx_files = []
+#     for root, dirs, files in os.walk(directory):
+#         for file in files:
+#             if file.endswith(".py") and not file.endswith(('__init__.py')) and not file.endswith(('api.py')):
+#                 pyx_files.append(os.path.join(root, file))
+#     return pyx_files
+
+# pyx_files = find_pyx_files('PrivateSign')
+
+# for file in pyx_files:
+#     ext = file.replace(os.sep, '.')[:-3], [file]
+#     print(ext)
+
+# extensions = [Extension(file.replace(os.sep, '.')[:-3], [file]) for file in pyx_files]
 
 class build_py(_build_py):
     def build_package_data(self):
@@ -22,24 +37,24 @@ class build_py(_build_py):
                     print(f"=====> Removing {src_file}")
                     os.remove(src_file)
 
-class build_ext(_build_ext):
-    def run(self):
-        super().run()
-        for ext in self.extensions:
-            for source in ext.sources:
-                print(f"=====> build_ext {source}")
-                if source.endswith('.c') and os.path.exists(source):
-                    os.remove(source)
+# class build_ext(_build_ext):
+#     def run(self):
+#         super().run()
+#         for ext in self.extensions:
+#             for source in ext.sources:
+#                 print(f"=====> build_ext {source}")
+#                 if source.endswith('.c') and os.path.exists(source):
+#                     os.remove(source)
 
 setup(
     name="PrivateSign",
-    version="0.7.10",
+    version="1.0.1",
     author="Brian",
     author_email="brian.hoag@paperlogic.co.jp",
     description="A secure sign PDF files SDK",
     packages=find_packages(),
     cmdclass={
-        'build_ext': build_ext,
+        # 'build_ext': build_ext,
         'build_py': build_py
     },
     install_requires=[
