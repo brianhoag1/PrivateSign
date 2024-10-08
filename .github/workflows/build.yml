@@ -49,28 +49,16 @@ jobs:
     name: Publish wheels to PyPI
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest]
+        python-version: ['3.9']
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: List artifacts
-        id: list-artifacts
-        run: |
-          echo "Fetching artifact list..."
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" \
-            | jq -r '.artifacts[].name' > artifact_names.txt
-
-      - name: Download each artifact
-        run: |
-          while IFS= read -r artifact_name; do
-            echo "Downloading $artifact_name..."
-            mkdir -p wheelhouse
-            gh run download ${{ github.run_id }} --name "$artifact_name" --dir wheelhouse
-          done < artifact_names.txt
-
       - name: Download wheels
         uses: actions/download-artifact@v4
         with:
-          name: wheels-*
+          name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
           path: wheelhouse
 
       - name: Install twine
