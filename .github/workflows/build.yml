@@ -37,7 +37,6 @@ jobs:
         env:
           CIBW_BUILD: "cp39-* cp312-*"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
-          CIBW_ARCHS_WINDOWS: "x86_64"
         run: cibuildwheel --output-dir wheelhouse
 
       - name: Upload wheels as artifacts
