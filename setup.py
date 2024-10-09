@@ -62,6 +62,7 @@ setup(
     },
     install_requires=[
         "requests",
+        "AuroraSign==0.0.25",
     ],
     ext_modules=cythonize(extensions),
     include_package_data=True,
