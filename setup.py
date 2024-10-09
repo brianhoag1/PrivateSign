@@ -1,6 +1,6 @@
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_py import build_py as _build_py
-from setuptools.command.build_ext import build_ext as _build_ext
+from setuptools.command.install import install as _install
 from Cython.Build import cythonize
 import os
 
@@ -26,7 +26,6 @@ extensions = [
 
 class build_py(_build_py):
     def build_package_data(self):
-        # Exclude source files after building
         super().build_package_data()
         for package in self.packages:
             package_dir = self.get_package_dir(package)
@@ -37,25 +36,29 @@ class build_py(_build_py):
                     print(f"=====> Removing {src_file}")
                     os.remove(src_file)
 
-# class build_ext(_build_ext):
-#     def run(self):
-#         super().run()
-#         for ext in self.extensions:
-#             for source in ext.sources:
-#                 print(f"=====> build_ext {source}")
-#                 if source.endswith('.c') and os.path.exists(source):
-#                     os.remove(source)
+def remove_c_files(directory):
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if file.endswith('.c'):
+                file_path = os.path.join(root, file)
+                print(f"=====> Removing {file_path}")
+                os.remove(file_path)
+
+class CustomInstall(_install):
+    def run(self):
+        super().run()
+        remove_c_files(self.install_lib)
 
 setup(
     name="PrivateSign",
-    version="1.0.4",
+    version="1.0.5",
     author="Brian",
     author_email="brian.hoag@paperlogic.co.jp",
     description="A secure sign PDF files SDK",
     packages=find_packages(),
     cmdclass={
-        # 'build_ext': build_ext,
-        'build_py': build_py
+        'build_py': build_py,
+        'install': CustomInstall,
     },
     install_requires=[
         "requests",

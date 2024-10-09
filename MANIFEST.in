@@ -1,7 +1,6 @@
-recursive-include PrivateSign/signer *.so *.pyd *.dll
+recursive-include PrivateSign *.so
 include PrivateSign/api.py
 
 # Exclude source files
-exclude PrivateSign/signer/*.py
-exclude PrivateSign/signer/*.pyx
+exclude PrivateSign *.py *.pyx
 exclude *.c
