@@ -14,16 +14,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
-            cibw_archs: "auto"
+            cibw_archs: "native"
           - os: ubuntu-latest
             cibw_archs: "aarch64"
           - os: windows-latest
             cibw_archs: "native ARM64"
           - os: macos-latest
-            cibw_archs: "native arm64"
+            cibw_archs: "x86_64 arm64"
     steps:
       - name: Set up QEMU
         if: matrix.cibw_archs == 'aarch64'
@@ -55,12 +54,11 @@ jobs:
         uses: pypa/cibuildwheel@v2.21.3
         env:
           CIBW_ARCHS: ${{ matrix.cibw_archs }}
-          CIBW_SKIP: "pp*"
 
       - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.os }}
+          name: wheels-${{ matrix.os }}-${{ matrix.cibw_archs }}
           path: wheelhouse/*.whl
 
   collect_and_publish:
