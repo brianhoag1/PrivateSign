@@ -51,7 +51,7 @@ class CustomInstall(_install):
 
 setup(
     name="PrivateSign",
-    version="1.1.0",
+    version="1.1.1",
     author="Brian",
     author_email="brian.hoag@paperlogic.co.jp",
     description="A secure sign PDF files SDK",
