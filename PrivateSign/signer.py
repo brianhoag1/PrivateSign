@@ -51,54 +51,54 @@ def sign(input_file, output_file, api_token, tenant_id, cert_type = 0):
     try:
         res_check, res_data = pplg_request(api_token, tenant_id, cert_type)
 
-        if res_check:
+        if not res_check:
+            print('Cannot sign document')
+            return
 
-            cert_bytes = base64.b64decode(res_data['_c'])
-            private_key_bytes = decrypt_data(res_data['_k'], api_token)
-            
-            cms_signer = signers.SimpleSigner.load_bytes(private_key_bytes, cert_bytes)
-
-            timestamp_info = json.loads(decrypt_data(res_data['_t'], api_token).decode('utf-8'))
-            tst_client = timestamps.HTTPTimeStamper(
-                timestamp_info['ts_url'], auth=HTTPBasicAuth(timestamp_info['ts_username'], timestamp_info['ts_password'])
-            )
-
-            vc = ValidationContext(
-                allow_fetching=True
-            )
-
-            pdf_buffer = open(input_file, 'rb')
-            w = IncrementalPdfFileWriter(pdf_buffer)
-
-            sig_field_name = 'Signature1'
-            user_info = res_data['user_info']
-            formatted_datetime_str = format_date()
-            reason = [
-                'Date Time: %s' % formatted_datetime_str,
-                'Signer Name: %s' % user_info['user_full_name'],
-                'Company Name: %s' % user_info['user_company_name'],
-                'Division: %s' % (user_info['division'] if user_info['division'] is not None else ''),
-                'Email: %s' % user_info['user_email'],
-            ]
-            reason_text = ', '.join(reason)
-            signature_metadata = signers.PdfSignatureMetadata(
-                field_name=sig_field_name,
-                reason=reason_text,
-                embed_validation_info=True,
-                validation_context=vc
-            )
-
-            with open(output_file, 'wb') as outf:
-                signers.sign_pdf(
-                    w, 
-                    signature_metadata,
-                    signer=cms_signer, 
-                    timestamper=tst_client,
-                    output=outf
-                )
+        cert_bytes = base64.b64decode(res_data['_c'])
+        private_key_bytes = decrypt_data(res_data['_k'], api_token)
         
-        return
-    
+        cms_signer = signers.SimpleSigner.load_bytes(private_key_bytes, cert_bytes)
+
+        timestamp_info = json.loads(decrypt_data(res_data['_t'], api_token).decode('utf-8'))
+        tst_client = timestamps.HTTPTimeStamper(
+            timestamp_info['ts_url'], auth=HTTPBasicAuth(timestamp_info['ts_username'], timestamp_info['ts_password'])
+        )
+
+        vc = ValidationContext(
+            allow_fetching=True
+        )
+
+        pdf_buffer = open(input_file, 'rb')
+        w = IncrementalPdfFileWriter(pdf_buffer)
+
+        sig_field_name = 'Signature1'
+        user_info = res_data['user_info']
+        formatted_datetime_str = format_date()
+        reason = [
+            'Date Time: %s' % formatted_datetime_str,
+            'Signer Name: %s' % user_info['user_full_name'],
+            'Company Name: %s' % user_info['user_company_name'],
+            'Division: %s' % (user_info['division'] if user_info['division'] is not None else ''),
+            'Email: %s' % user_info['user_email'],
+        ]
+        reason_text = ', '.join(reason)
+        signature_metadata = signers.PdfSignatureMetadata(
+            field_name=sig_field_name,
+            reason=reason_text,
+            embed_validation_info=True,
+            validation_context=vc
+        )
+
+        with open(output_file, 'wb') as outf:
+            signers.sign_pdf(
+                w, 
+                signature_metadata,
+                signer=cms_signer, 
+                timestamper=tst_client,
+                output=outf
+            )
+        
     except Exception as ex:
         print('Exception', ex)
 
@@ -160,4 +160,41 @@ def sign_no_timestamp(input_file, output_file, api_token, tenant_id, cert_type =
 
     finally:
         print('done')
+
+def timestamp(input_file, output_file, api_token, tenant_id):
+    print('Start timestamping...')
+    
+    try:
+        res_check, res_data = pplg_request(api_token, tenant_id, 0)
+
+        if not res_check:
+            print('Cannot timestamp document')
+            return
+
+        timestamp_info = json.loads(decrypt_data(res_data['_t'], api_token).decode('utf-8'))
+        tst_client = timestamps.HTTPTimeStamper(
+            timestamp_info['ts_url'], auth=HTTPBasicAuth(timestamp_info['ts_username'], timestamp_info['ts_password'])
+        )
+
+        pdf_buffer = open(input_file, 'rb')
+        w = IncrementalPdfFileWriter(pdf_buffer)
+
+        with open(output_file, 'wb') as outf:
+            signers.PdfTimeStamper(tst_client).timestamp_pdf(
+                pdf_out=w, 
+                md_algorithm=signers.DEFAULT_MD,
+                timestamper=tst_client,
+                validation_context=ValidationContext(
+                    allow_fetching=True
+                ),
+                output=outf
+            )
         
+    
+    except Exception as ex:
+        print('Exception', ex)
+
+    finally:
+        print('done')  
+
+
