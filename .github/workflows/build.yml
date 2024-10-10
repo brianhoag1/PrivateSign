@@ -17,18 +17,18 @@ jobs:
         include:
           - os: ubuntu-latest
             cibw_archs: "native"
-          - os: ubuntu-latest
+          - os: self-hosted
             cibw_archs: "aarch64"
           - os: windows-latest
             cibw_archs: "native ARM64"
           - os: macos-latest
             cibw_archs: "x86_64 arm64"
     steps:
-      - name: Set up QEMU
-        if: matrix.cibw_archs == 'aarch64'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
+      # - name: Set up QEMU
+      #   if: matrix.cibw_archs == 'aarch64'
+      #   uses: docker/setup-qemu-action@v3
+      #   with:
+      #     platforms: arm64
 
       - name: Checkout repository
         uses: actions/checkout@v4
